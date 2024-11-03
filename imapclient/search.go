@@ -2,8 +2,6 @@ package imapclient
 
 import (
 	"fmt"
-	"io"
-	"log"
 	"strings"
 	"time"
 	"unicode"
@@ -71,11 +69,6 @@ func (c *Client) search(numKind imapwire.NumKind, criteria *imap.SearchCriteria,
 	}
 	writeSearchKey(enc.Encoder, criteria)
 	enc.end()
-	b, err := io.ReadAll(enc.client.br)
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println("OK:", string(b))
 	return cmd
 }
 

@@ -2,7 +2,6 @@ package imapclient
 
 import (
 	"fmt"
-	"log"
 	"strings"
 	"time"
 	"unicode"
@@ -59,7 +58,10 @@ func (c *Client) search(numKind imapwire.NumKind, criteria *imap.SearchCriteria,
 	cmd := &SearchCommand{}
 	cmd.data.All = all
 	enc := c.beginCommand(uidCmdName("SEARCH", numKind), cmd)
-	if returnOpts := returnSearchOptions(options); len(returnOpts) > 0 {
+
+	if criteria.Raw != "" {
+		enc.SP().Atom(criteria.Raw)
+	} else if returnOpts := returnSearchOptions(options); len(returnOpts) > 0 {
 		enc.SP().Atom("RETURN").SP().List(len(returnOpts), func(i int) {
 			enc.Atom(returnOpts[i])
 		})
@@ -69,9 +71,6 @@ func (c *Client) search(numKind imapwire.NumKind, criteria *imap.SearchCriteria,
 		enc.Atom("CHARSET").SP().Atom(charset).SP()
 	}
 	writeSearchKey(enc.Encoder, criteria)
-
-	log.Println("OK:", *enc.Encoder)
-
 	enc.end()
 
 	return cmd
@@ -169,10 +168,6 @@ func writeSearchKey(enc *imapwire.Encoder, criteria *imap.SearchCriteria) {
 		}
 		firstItem = false
 		return enc
-	}
-
-	if criteria.Raw != "" {
-		encodeItem().String(criteria.Raw)
 	}
 
 	for _, seqSet := range criteria.SeqNum {

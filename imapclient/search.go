@@ -166,6 +166,10 @@ func writeSearchKey(enc *imapwire.Encoder, criteria *imap.SearchCriteria) {
 		return enc
 	}
 
+	if criteria.Raw != "" {
+		encodeItem().String(criteria.Raw)
+	}
+
 	for _, seqSet := range criteria.SeqNum {
 		encodeItem().NumSet(seqSet)
 	}

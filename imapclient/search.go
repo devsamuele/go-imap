@@ -69,12 +69,13 @@ func (c *Client) search(numKind imapwire.NumKind, criteria *imap.SearchCriteria,
 		enc.Atom("CHARSET").SP().Atom(charset).SP()
 	}
 	writeSearchKey(enc.Encoder, criteria)
-	enc.end()
 
 	b := make([]byte, 0)
 	c.br.Read(b)
 
 	log.Println("OK:", string(b))
+
+	enc.end()
 
 	return cmd
 }

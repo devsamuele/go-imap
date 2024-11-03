@@ -70,10 +70,7 @@ func (c *Client) search(numKind imapwire.NumKind, criteria *imap.SearchCriteria,
 	}
 	writeSearchKey(enc.Encoder, criteria)
 
-	b := make([]byte, 0)
-	c.br.Read(b)
-
-	log.Println("OK:", string(b))
+	log.Println("OK:", *enc.Encoder)
 
 	enc.end()
 

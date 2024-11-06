@@ -557,9 +557,10 @@ func (c *Client) handleFetch(seqNum uint32) error {
 				return dec.Err()
 			}
 
-			r, _, _ := dec.ExpectNStringReader()
-			log.Println("OK-SAM")
-			log.Println(io.ReadAll(r))
+			var msgId int64
+			dec.ExpectNumber64(&msgId)
+
+			log.Println("OK-SAM:", msgId)
 
 			item = nil
 		case "FLAGS":

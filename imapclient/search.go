@@ -78,7 +78,7 @@ func (c *Client) search(numKind imapwire.NumKind, criteria *imap.SearchCriteria,
 	return cmd
 }
 
-func (c *Client) searchXGMEXT1(numKind imapwire.NumKind, args string, options *imap.SearchOptions) *SearchCommand {
+func (c *Client) searchXGMEXT1(numKind imapwire.NumKind, arg string, options *imap.SearchOptions) *SearchCommand {
 	// The IMAP4rev2 SEARCH charset defaults to UTF-8. When UTF8=ACCEPT is
 	// enabled, specifying any CHARSET is invalid. For IMAP4rev1 the default is
 	// undefined and only US-ASCII support is required. What's more, some
@@ -88,10 +88,10 @@ func (c *Client) searchXGMEXT1(numKind imapwire.NumKind, args string, options *i
 	// servers even if we only send ASCII characters: the server then must
 	// decode encoded headers and Content-Transfer-Encoding before matching the
 	// criteria.
-	// var charset string
-	// if !c.Caps().Has(imap.CapIMAP4rev2) && !c.enabled.Has(imap.CapUTF8Accept) {
-	// 	charset = "UTF-8"
-	// }
+	var charset string
+	if !c.Caps().Has(imap.CapIMAP4rev2) && !c.enabled.Has(imap.CapUTF8Accept) {
+		charset = "UTF-8"
+	}
 
 	var all imap.NumSet
 	switch numKind {
@@ -105,21 +105,12 @@ func (c *Client) searchXGMEXT1(numKind imapwire.NumKind, args string, options *i
 	cmd.data.All = all
 	enc := c.beginCommand(uidCmdName("SEARCH", numKind), cmd)
 
-	enc.SP().Atom(`X-GM-RAW`)
+	enc.SP().Atom(arg)
 
-	if args != "" {
-		enc.SP().Atom(fmt.Sprintf(`"%s"`, args))
-	}
-
-	// if returnOpts := returnSearchOptions(options); len(returnOpts) > 0 {
-	// 	enc.SP().Atom("RETURN").SP().List(len(returnOpts), func(i int) {
-	// 		enc.Atom(returnOpts[i])
-	// 	})
-	// }
 	enc.SP()
-	// if charset != "" {
-	// 	enc.Atom("CHARSET").SP().Atom(charset).SP()
-	// }
+	if charset != "" {
+		enc.Atom("CHARSET").SP().Atom(charset).SP()
+	}
 	enc.end()
 
 	return cmd
@@ -136,8 +127,8 @@ func (c *Client) UIDSearch(criteria *imap.SearchCriteria, options *imap.SearchOp
 }
 
 // Search sends a SEARCH command.
-func (c *Client) SearchXGMEXT1(args string, options *imap.SearchOptions) *SearchCommand {
-	return c.searchXGMEXT1(imapwire.NumKindSeq, args, options)
+func (c *Client) SearchXGMEXT1(arg string, options *imap.SearchOptions) *SearchCommand {
+	return c.searchXGMEXT1(imapwire.NumKindSeq, arg, options)
 }
 
 // UIDSearch sends a UID SEARCH command.

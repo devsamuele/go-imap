@@ -40,6 +40,20 @@ func (c *Client) Fetch(numSet imap.NumSet, options *imap.FetchOptions) *FetchCom
 	return cmd
 }
 
+func (c *Client) FetchXGMMSGID(numSet imap.NumSet) *FetchCommand {
+	numKind := imapwire.NumSetKind(numSet)
+
+	cmd := &FetchCommand{
+		numSet: numSet,
+		msgs:   make(chan *FetchMessageData, 128),
+	}
+	enc := c.beginCommand(uidCmdName("FETCH", numKind), cmd)
+	enc.SP().NumSet(numSet).SP().Atom("(X-GM-MSGID)")
+
+	enc.end()
+	return cmd
+}
+
 func writeFetchItems(enc *imapwire.Encoder, numKind imapwire.NumKind, options *imap.FetchOptions) {
 	listEnc := enc.BeginList()
 

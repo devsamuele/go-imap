@@ -3,6 +3,7 @@ package imapclient
 import (
 	"fmt"
 	"io"
+	"log"
 	netmail "net/mail"
 	"strings"
 	"time"
@@ -551,6 +552,16 @@ func (c *Client) handleFetch(seqNum uint32) error {
 			done chan struct{}
 		)
 		switch attName {
+		case "X-GM-MSGID":
+			if !dec.ExpectSP() {
+				return dec.Err()
+			}
+
+			r, _, _ := dec.ExpectNStringReader()
+			log.Println("OK-SAM")
+			log.Println(io.ReadAll(r))
+
+			item = nil
 		case "FLAGS":
 			if !dec.ExpectSP() {
 				return dec.Err()

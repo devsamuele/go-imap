@@ -88,10 +88,10 @@ func (c *Client) searchXGMEXT1(numKind imapwire.NumKind, args string, options *i
 	// servers even if we only send ASCII characters: the server then must
 	// decode encoded headers and Content-Transfer-Encoding before matching the
 	// criteria.
-	var charset string
-	if !c.Caps().Has(imap.CapIMAP4rev2) && !c.enabled.Has(imap.CapUTF8Accept) {
-		charset = "UTF-8"
-	}
+	// var charset string
+	// if !c.Caps().Has(imap.CapIMAP4rev2) && !c.enabled.Has(imap.CapUTF8Accept) {
+	// 	charset = "UTF-8"
+	// }
 
 	var all imap.NumSet
 	switch numKind {
@@ -117,9 +117,9 @@ func (c *Client) searchXGMEXT1(numKind imapwire.NumKind, args string, options *i
 	// 	})
 	// }
 	enc.SP()
-	if charset != "" {
-		enc.Atom("CHARSET").SP().Atom(charset).SP()
-	}
+	// if charset != "" {
+	// 	enc.Atom("CHARSET").SP().Atom(charset).SP()
+	// }
 	enc.end()
 
 	return cmd

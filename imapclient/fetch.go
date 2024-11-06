@@ -3,7 +3,6 @@ package imapclient
 import (
 	"fmt"
 	"io"
-	"log"
 	netmail "net/mail"
 	"strings"
 	"time"
@@ -315,6 +314,7 @@ type FetchItemData interface {
 
 var (
 	_ FetchItemData = FetchItemDataBodySection{}
+	_ FetchItemData = FetchItemDataXGMMSGID{}
 	_ FetchItemData = FetchItemDataBinarySection{}
 	_ FetchItemData = FetchItemDataFlags{}
 	_ FetchItemData = FetchItemDataEnvelope{}
@@ -364,6 +364,13 @@ func (item FetchItemDataBinarySection) discard() {
 		io.Copy(io.Discard, item.Literal)
 	}
 }
+
+// FetchItemDataFlags holds data returned by FETCH FLAGS.
+type FetchItemDataXGMMSGID struct {
+	XGMMSGID int64
+}
+
+func (FetchItemDataXGMMSGID) fetchItemData() {}
 
 // FetchItemDataFlags holds data returned by FETCH FLAGS.
 type FetchItemDataFlags struct {
@@ -560,9 +567,7 @@ func (c *Client) handleFetch(seqNum uint32) error {
 			var msgId int64
 			dec.ExpectNumber64(&msgId)
 
-			log.Println("OK-SAM:", msgId)
-
-			item = nil
+			item = FetchItemDataXGMMSGID{XGMMSGID: msgId}
 		case "FLAGS":
 			if !dec.ExpectSP() {
 				return dec.Err()

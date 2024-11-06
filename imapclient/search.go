@@ -111,11 +111,11 @@ func (c *Client) searchXGMEXT1(numKind imapwire.NumKind, args string, options *i
 		enc.SP().String(args)
 	}
 
-	if returnOpts := returnSearchOptions(options); len(returnOpts) > 0 {
-		enc.SP().Atom("RETURN").SP().List(len(returnOpts), func(i int) {
-			enc.Atom(returnOpts[i])
-		})
-	}
+	// if returnOpts := returnSearchOptions(options); len(returnOpts) > 0 {
+	// 	enc.SP().Atom("RETURN").SP().List(len(returnOpts), func(i int) {
+	// 		enc.Atom(returnOpts[i])
+	// 	})
+	// }
 	enc.SP()
 	if charset != "" {
 		enc.Atom("CHARSET").SP().Atom(charset).SP()

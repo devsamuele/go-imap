@@ -77,6 +77,7 @@ func writeFetchItems(enc *imapwire.Encoder, numKind imapwire.NumKind, options *i
 		"RFC822.SIZE":   options.RFC822Size,
 		"MODSEQ":        options.ModSeq,
 	}
+
 	for k, req := range m {
 		if req {
 			listEnc.Item().Atom(k)

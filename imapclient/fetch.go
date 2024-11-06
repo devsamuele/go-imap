@@ -40,19 +40,23 @@ func (c *Client) Fetch(numSet imap.NumSet, options *imap.FetchOptions) *FetchCom
 	return cmd
 }
 
-func (c *Client) FetchXGMMSGID(numSet imap.NumSet) *FetchCommand {
-	numKind := imapwire.NumSetKind(numSet)
+// func (c *Client) FetchXGMMSGID(numSet imap.NumSet) *FetchCommand {
 
-	cmd := &FetchCommand{
-		numSet: numSet,
-		msgs:   make(chan *FetchMessageData, 128),
-	}
-	enc := c.beginCommand(uidCmdName("FETCH", numKind), cmd)
-	enc.SP().NumSet(numSet).SP().Atom("(X-GM-MSGID)")
+// 	numKind := imapwire.NumSetKind(numSet)
 
-	enc.end()
-	return cmd
-}
+// 	cmd := &FetchCommand{
+// 		numSet: numSet,
+// 		msgs:   make(chan *FetchMessageData, 128),
+// 	}
+// 	enc := c.beginCommand(uidCmdName("FETCH", numKind), cmd)
+// 	enc.SP().NumSet(numSet).SP().Atom("(X-GM-MSGID)")
+// 	// writeFetchItems(enc.Encoder, numKind, options)
+// 	// if options.ChangedSince != 0 {
+// 	// 	enc.SP().Special('(').Atom("CHANGEDSINCE").SP().ModSeq(options.ChangedSince).Special(')')
+// 	// }
+// 	enc.end()
+// 	return cmd
+// }
 
 func writeFetchItems(enc *imapwire.Encoder, numKind imapwire.NumKind, options *imap.FetchOptions) {
 	listEnc := enc.BeginList()
@@ -64,6 +68,7 @@ func writeFetchItems(enc *imapwire.Encoder, numKind imapwire.NumKind, options *i
 	}
 
 	m := map[string]bool{
+		"X-GM-MSGID":    options.XGMMSGID,
 		"BODY":          options.BodyStructure != nil && !options.BodyStructure.Extended,
 		"BODYSTRUCTURE": options.BodyStructure != nil && options.BodyStructure.Extended,
 		"ENVELOPE":      options.Envelope,

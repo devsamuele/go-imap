@@ -9,6 +9,7 @@ import (
 // FetchOptions contains options for the FETCH command.
 type FetchOptions struct {
 	// Fields to fetch
+	XGMMSGID          bool
 	BodyStructure     *FetchItemBodyStructure
 	Envelope          bool
 	Flags             bool

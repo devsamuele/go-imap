@@ -126,12 +126,12 @@ func (c *Client) UIDSearch(criteria *imap.SearchCriteria, options *imap.SearchOp
 
 // Search sends a SEARCH command.
 func (c *Client) SearchXGMEXT1(arg string, options *imap.SearchOptions) *SearchCommand {
-	return c.searchXGMEXT1(imapwire.NumKindSeq, arg, options)
+	return c.searchXGMEXT1(imapwire.NumKindSeq, arg)
 }
 
 // UIDSearch sends a UID SEARCH command.
 func (c *Client) UIDSearchXGMEXT1(args string, options *imap.SearchOptions) *SearchCommand {
-	return c.searchXGMEXT1(imapwire.NumKindUID, args, options)
+	return c.searchXGMEXT1(imapwire.NumKindUID, args)
 }
 
 func (c *Client) handleSearch() error {

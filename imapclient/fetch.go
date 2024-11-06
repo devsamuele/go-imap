@@ -40,11 +40,7 @@ func (c *Client) Fetch(numSet imap.NumSet, options *imap.FetchOptions) *FetchCom
 	return cmd
 }
 
-func (c *Client) FetchXGMMSGID(numSet imap.NumSet, options *imap.FetchOptions) *FetchCommand {
-	if options == nil {
-		options = new(imap.FetchOptions)
-	}
-
+func (c *Client) FetchXGMMSGID(numSet imap.NumSet) *FetchCommand {
 	numKind := imapwire.NumSetKind(numSet)
 
 	cmd := &FetchCommand{
@@ -53,10 +49,7 @@ func (c *Client) FetchXGMMSGID(numSet imap.NumSet, options *imap.FetchOptions) *
 	}
 	enc := c.beginCommand(uidCmdName("FETCH", numKind), cmd)
 	enc.SP().NumSet(numSet).SP().Atom("(X-GM-MSGID)")
-	writeFetchItems(enc.Encoder, numKind, options)
-	// if options.ChangedSince != 0 {
-	// 	enc.SP().Special('(').Atom("CHANGEDSINCE").SP().ModSeq(options.ChangedSince).Special(')')
-	// }
+
 	enc.end()
 	return cmd
 }

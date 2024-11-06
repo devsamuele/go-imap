@@ -108,7 +108,7 @@ func (c *Client) searchXGMEXT1(numKind imapwire.NumKind, args string, options *i
 	enc.SP().Atom(`X-GM-RAW`)
 
 	if args != "" {
-		enc.SP().String(args)
+		enc.SP().Atom(fmt.Sprintf(`"%s"`, args))
 	}
 
 	// if returnOpts := returnSearchOptions(options); len(returnOpts) > 0 {

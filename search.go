@@ -38,6 +38,7 @@ type SearchOptions struct {
 type SearchCriteria struct {
 	SeqNum []SeqSet
 	UID    []UIDSet
+	Raw    string
 
 	// Only the date is used, the time and timezone are ignored
 	Since      time.Time
